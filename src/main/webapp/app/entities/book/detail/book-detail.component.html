@@ -1,0 +1,74 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (book()) {
+      <div>
+        <h2 data-cy="bookDetailsHeading"><span jhiTranslate="libraryWjdlApp.book.detail.title">Book</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ book()!.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="libraryWjdlApp.book.isbn">Isbn</span></dt>
+          <dd>
+            <span>{{ book()!.isbn }}</span>
+          </dd>
+          <dt><span jhiTranslate="libraryWjdlApp.book.name">Name</span></dt>
+          <dd>
+            <span>{{ book()!.name }}</span>
+          </dd>
+          <dt><span jhiTranslate="libraryWjdlApp.book.publishYear">Publish Year</span></dt>
+          <dd>
+            <span>{{ book()!.publishYear | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="libraryWjdlApp.book.copies">Copies</span></dt>
+          <dd>
+            <span>{{ book()!.copies }}</span>
+          </dd>
+          <dt><span jhiTranslate="libraryWjdlApp.book.picture">Picture</span></dt>
+          <dd>
+            @if (book()!.picture) {
+              <div>
+                <a (click)="openFile(book()!.picture ?? '', book()!.pictureContentType)">
+                  <img [src]="'data:' + book()!.pictureContentType + ';base64,' + book()!.picture" style="max-width: 100%" alt="book" />
+                </a>
+                {{ book()!.pictureContentType }}, {{ byteSize(book()!.picture ?? '') }}
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="libraryWjdlApp.book.publisher">Publisher</span></dt>
+          <dd>
+            @if (book()!.publisher) {
+              <div>
+                <a [routerLink]="['/publisher', book()!.publisher?.id, 'view']">{{ book()!.publisher?.id }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="libraryWjdlApp.book.author">Author</span></dt>
+          <dd>
+            @for (author of book()!.authors; track $index; let last = $last) {
+              <span>
+                <a [routerLink]="['/author', author.id, 'view']">{{ author?.id }}</a
+                >{{ last ? '' : ', ' }}
+              </span>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/book', book()!.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,120 @@
+<div>
+  <h2 id="page-heading" data-cy="BorrowedBookHeading">
+    <span jhiTranslate="libraryWjdlApp.borrowedBook.home.title">Borrowed Books</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span jhiTranslate="libraryWjdlApp.borrowedBook.home.refreshListLabel">Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-borrowed-book"
+        [routerLink]="['/borrowed-book/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="libraryWjdlApp.borrowedBook.home.createLabel">Create a new Borrowed Book</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  @if (borrowedBooks?.length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="libraryWjdlApp.borrowedBook.home.notFound">No Borrowed Books found</span>
+    </div>
+  }
+
+  @if (borrowedBooks && borrowedBooks.length > 0) {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="libraryWjdlApp.borrowedBook.id">Id</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="borrowDate">
+              <div class="d-flex">
+                <span jhiTranslate="libraryWjdlApp.borrowedBook.borrowDate">Borrow Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="updatedDate">
+              <div class="d-flex">
+                <span jhiTranslate="libraryWjdlApp.borrowedBook.updatedDate">Updated Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="book.id">
+              <div class="d-flex">
+                <span jhiTranslate="libraryWjdlApp.borrowedBook.book">Book</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="clinet.id">
+              <div class="d-flex">
+                <span jhiTranslate="libraryWjdlApp.borrowedBook.clinet">Clinet</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (borrowedBook of borrowedBooks; track trackId) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/borrowed-book', borrowedBook.id, 'view']">{{ borrowedBook.id }}</a>
+              </td>
+              <td>{{ borrowedBook.borrowDate | formatMediumDatetime }}</td>
+              <td>{{ borrowedBook.updatedDate | formatMediumDatetime }}</td>
+              <td>
+                @if (borrowedBook.book) {
+                  <div>
+                    <a [routerLink]="['/book', borrowedBook.book.id, 'view']">{{ borrowedBook.book.id }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (borrowedBook.clinet) {
+                  <div>
+                    <a [routerLink]="['/client', borrowedBook.clinet.id, 'view']">{{ borrowedBook.clinet.id }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/borrowed-book', borrowedBook.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                  </a>
+
+                  <a [routerLink]="['/borrowed-book', borrowedBook.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(borrowedBook)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

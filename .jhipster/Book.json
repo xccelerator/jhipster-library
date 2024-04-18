@@ -1,0 +1,60 @@
+{
+  "annotations": {
+    "changelogDate": "20240417192851"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "isbn",
+      "fieldType": "String",
+      "fieldValidateRules": ["unique", "required", "minlength", "maxlength"],
+      "fieldValidateRulesMaxlength": "13",
+      "fieldValidateRulesMinlength": "13"
+    },
+    {
+      "fieldName": "name",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "100"
+    },
+    {
+      "fieldName": "publishYear",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "copies",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "picture",
+      "fieldType": "byte[]",
+      "fieldTypeBlobContent": "image"
+    }
+  ],
+  "name": "Book",
+  "pagination": "infinite-scroll",
+  "relationships": [
+    {
+      "otherEntityName": "borrowedBook",
+      "otherEntityRelationshipName": "book",
+      "relationshipName": "borrowedBook",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "publisher",
+      "relationshipName": "publisher",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "author",
+      "otherEntityRelationshipName": "book",
+      "relationshipName": "author",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-many"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

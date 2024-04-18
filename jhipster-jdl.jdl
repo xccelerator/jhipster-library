@@ -1,0 +1,51 @@
+
+entity Book {
+	isbn String unique required minlength(13) maxlength(13)
+    name String maxlength(100)
+	publishYear Instant
+    copies Integer
+    picture ImageBlob
+}
+
+entity Publisher {
+	name String required maxlength(100)
+}
+
+entity Author {
+	firstName String required maxlength(45)
+    lastName String required maxlength(45)
+}
+
+entity BorrowedBook {
+ 	id Integer
+    borrowDate Instant
+    updatedDate Instant
+}
+
+entity Client {
+	firstName String required maxlength(45)
+    lastName String maxlength(45)
+    address String maxlength(50)
+    phone String maxlength(31)
+}
+
+relationship ManyToMany {
+	Author to Book
+}
+
+relationship OneToMany {
+	Publisher to Book{publisher}
+    @OnDelete("CASCADE") Book to BorrowedBook{book}
+    @OnDelete("CASCADE") Client to BorrowedBook{clinet}
+}
+
+
+// Set pagination options
+paginate Book with infinite-scroll
+paginate Publisher, Author, Client with pagination
+
+// dto * with mapstruct
+
+service all with serviceClass
+
+

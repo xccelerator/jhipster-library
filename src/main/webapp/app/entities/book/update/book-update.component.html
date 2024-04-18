@@ -1,0 +1,169 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-book-heading" data-cy="BookCreateUpdateHeading" jhiTranslate="libraryWjdlApp.book.home.createOrEditLabel">
+        Create or edit a Book
+      </h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="libraryWjdlApp.book.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label" for="field_isbn" jhiTranslate="libraryWjdlApp.book.isbn">Isbn</label>
+          <input type="text" class="form-control" name="isbn" id="field_isbn" data-cy="isbn" formControlName="isbn" />
+          @if (editForm.get('isbn')!.invalid && (editForm.get('isbn')!.dirty || editForm.get('isbn')!.touched)) {
+            <div>
+              @if (editForm.get('isbn')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              @if (editForm.get('isbn')?.errors?.minlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.minlength" [translateValues]="{ min: '13' }"
+                  >This field is required to be at least 13 characters.</small
+                >
+              }
+              @if (editForm.get('isbn')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '13' }"
+                  >This field cannot be longer than 13 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_name" jhiTranslate="libraryWjdlApp.book.name">Name</label>
+          <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
+          @if (editForm.get('name')!.invalid && (editForm.get('name')!.dirty || editForm.get('name')!.touched)) {
+            <div>
+              @if (editForm.get('name')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '100' }"
+                  >This field cannot be longer than 100 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_publishYear" jhiTranslate="libraryWjdlApp.book.publishYear">Publish Year</label>
+          <div class="d-flex">
+            <input
+              id="field_publishYear"
+              data-cy="publishYear"
+              type="datetime-local"
+              class="form-control"
+              name="publishYear"
+              formControlName="publishYear"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_copies" jhiTranslate="libraryWjdlApp.book.copies">Copies</label>
+          <input type="number" class="form-control" name="copies" id="field_copies" data-cy="copies" formControlName="copies" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_picture" jhiTranslate="libraryWjdlApp.book.picture">Picture</label>
+          <div>
+            @if (editForm.get('picture')!.value) {
+              <img
+                [src]="'data:' + editForm.get('pictureContentType')!.value + ';base64,' + editForm.get('picture')!.value"
+                style="max-height: 100px"
+                alt="book"
+              />
+            }
+            @if (editForm.get('picture')!.value) {
+              <div class="form-text text-danger clearfix">
+                <span class="pull-start"
+                  >{{ editForm.get('pictureContentType')!.value }}, {{ byteSize(editForm.get('picture')!.value!) }}</span
+                >
+                <button
+                  type="button"
+                  (click)="clearInputImage('picture', 'pictureContentType', 'file_picture')"
+                  class="btn btn-secondary btn-xs pull-end"
+                >
+                  <fa-icon icon="times"></fa-icon>
+                </button>
+              </div>
+            }
+            <input
+              type="file"
+              id="file_picture"
+              data-cy="picture"
+              (change)="setFileData($event, 'picture', true)"
+              accept="image/*"
+              jhiTranslate="entity.action.addimage"
+            />
+          </div>
+          <input type="hidden" class="form-control" name="picture" id="field_picture" data-cy="picture" formControlName="picture" />
+          <input
+            type="hidden"
+            class="form-control"
+            name="pictureContentType"
+            id="field_pictureContentType"
+            formControlName="pictureContentType"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_publisher" jhiTranslate="libraryWjdlApp.book.publisher">Publisher</label>
+          <select
+            class="form-control"
+            id="field_publisher"
+            data-cy="publisher"
+            name="publisher"
+            formControlName="publisher"
+            [compareWith]="comparePublisher"
+          >
+            <option [ngValue]="null"></option>
+            @for (publisherOption of publishersSharedCollection; track $index) {
+              <option [ngValue]="publisherOption">{{ publisherOption.id }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="field_authors" jhiTranslate="libraryWjdlApp.book.author">Author</label>
+          <select
+            class="form-control"
+            id="field_authors"
+            data-cy="author"
+            multiple
+            name="authors"
+            formControlName="authors"
+            [compareWith]="compareAuthor"
+          >
+            @for (authorOption of authorsSharedCollection; track $index) {
+              <option [ngValue]="authorOption">{{ authorOption.id }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

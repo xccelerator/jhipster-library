@@ -1,0 +1,54 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (borrowedBook()) {
+      <div>
+        <h2 data-cy="borrowedBookDetailsHeading"><span jhiTranslate="libraryWjdlApp.borrowedBook.detail.title">Borrowed Book</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="libraryWjdlApp.borrowedBook.id">Id</span></dt>
+          <dd>
+            <span>{{ borrowedBook()!.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="libraryWjdlApp.borrowedBook.borrowDate">Borrow Date</span></dt>
+          <dd>
+            <span>{{ borrowedBook()!.borrowDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="libraryWjdlApp.borrowedBook.updatedDate">Updated Date</span></dt>
+          <dd>
+            <span>{{ borrowedBook()!.updatedDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="libraryWjdlApp.borrowedBook.book">Book</span></dt>
+          <dd>
+            @if (borrowedBook()!.book) {
+              <div>
+                <a [routerLink]="['/book', borrowedBook()!.book?.id, 'view']">{{ borrowedBook()!.book?.id }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="libraryWjdlApp.borrowedBook.clinet">Clinet</span></dt>
+          <dd>
+            @if (borrowedBook()!.clinet) {
+              <div>
+                <a [routerLink]="['/client', borrowedBook()!.clinet?.id, 'view']">{{ borrowedBook()!.clinet?.id }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/borrowed-book', borrowedBook()!.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>
